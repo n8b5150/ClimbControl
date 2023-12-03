@@ -2,7 +2,9 @@
 
 This is a simple AutoHotKey script to control the Kickr Climb Level through the Wahoo SYSTM App.
 
-## Requirments
+
+## 
+## Requirements
 Windows OS
 
 Wahoo SYSTM
@@ -13,31 +15,45 @@ Wahoo Kickr Climb
 
 Compatible Smart Trainer
 
+
+## 
 ## Installation
 
 Install AutoHotKey V2 and Wahoo SYSTM. 
 
 Download the latest Zip in Releases.
 
-Unzip to the location of your choice. 
+Unzip to the location of your choice.
 
-Run ClimbControl.ahk
 
+## 
 ## Usage
 
-A Wahoo SYSTM cycling workout must be active for the Climb Control to work. There are three modes:
+Open **SYSTM** and enter a cycling workout. Run **ClimbControl.ahk**.
 
-Random: Randomly selected interval duration and level.
+ClimbControl has three modes:
 
-Interval: Define interval duration and corresponding level.
+### Manual
 
-Manual: Click the buttons to select the desired level.
+Click the Level buttons to select the desired level. Start the SYSTM workout and click the the level buttons to change the simulated gradient.
 
+### Random 
+
+Randomly selected interval duration and level. Click **Random** to open the Random Control, start the SYSTM workout, and click **Start** in the Random Control window.
+
+### Interval
+
+Define interval duration and corresponding level. Click **Interval** to open the Interval definition window. Click **Add Interval** repeatedly to add the desired number of intervals. Fill in the Duration and Level fields. Start the SYSTM workout and click **Start** in the Interval definition window.
+
+
+## 
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
 to discuss what you would like to change.
 
+
+## 
 ## License
 
 MIT License
