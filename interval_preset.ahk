@@ -22,13 +22,27 @@ Delete Preset deletes preset
 {
 
     SectionNames := StrSplit(IniRead(IniPath), "`n") ; array of section names
-    MsgBox(SectionNames[1]) ; display first section name
+    ;MsgBox(SectionNames[1]) ; display first section name
 
     ;Section := IniRead(IniPath, SectionNames)
 
-    IniWrite "Key5=Value5", IniPath, "AddSection5"
-    IniWrite "Key5=Value3", IniPath, "AddSection5"
-    IniWrite "Key5a=Value5a", IniPath, "AddSection5"
+    DefObj := Object()
 
-    IniDelete IniPath, "AddSection5", "Key5" ; delete AddSection5, Key5
+    Loop 10
+        {
+            i := A_Index
+            ;DefObj := DefObj.DefineProp("Int" i, {Value: 10})
+            ;DefObj := DefObj.DefineProp("Lev" i, {Value: 0})
+            DefObj.Int%i% := 10
+            DefObj.Lev%i% := 0
+        }
+
+    Loop 10
+        {
+            i := A_Index
+            IniWrite DefObj.Int%i%, IniPath, "Default", "Int" i
+            IniWrite DefObj.Lev%i%, IniPath, "Default", "Lev" i
+        }
+
+    ;IniDelete IniPath, "AddSection5", "Key5" ; delete AddSection5, Key5
 }
