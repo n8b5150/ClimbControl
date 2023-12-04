@@ -52,6 +52,12 @@ Define interval duration and corresponding level. Click **Interval** to open the
 Pull requests are welcome. For major changes, please open an issue first
 to discuss what you would like to change.
 
+##
+## Planned Features
+
+Ability to save presets in Interval Mode
+
+Options for weighted random interval/level selection (linear, flat, log, etc) in Random Mode
 
 ## 
 ## License
