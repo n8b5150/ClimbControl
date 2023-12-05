@@ -45,12 +45,18 @@ PresetNames := StrSplit(IniRead(IniPath), "`n")
 
 PreGui.AddText("xm+10", "Preset: ")
 PreGui.AddDropDownList(" yp w150 Choose1 vPresetName", PresetNames)
-LdIniBtn := PreGui.Add("Button", "yp w75 x+10", "Load")
-LdIniBtn.OnEvent("Click", LdIni)
+LdPreBtn := PreGui.Add("Button", "yp w75 x+10", "Load Preset")
+LdPreBtn.OnEvent("Click", LdPre)
 
-LdIni(*)
+LdPre(*)
 {
     MsgBox(PreGui['PresetName'].Text)
+
+    ; Get preset name
+    ; Get section
+    ; Get values
+    ; Create rows and fill with values
+
 }
 
 
