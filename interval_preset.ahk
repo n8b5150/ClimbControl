@@ -21,20 +21,41 @@ Delete Preset deletes preset
 PreGui := Gui("-SysMenu", "Gradient Interval Control")
 AddRowBtn := PreGui.Add("Button", "Default w75 xm+35", "Add Interval")
 AddRowBtn.OnEvent("Click", AddRow)
-WrIniBtn := PreGui.Add("Button", "yp wp x+10", "Write Ini")
-WrIniBtn.OnEvent("Click", WrIni)
+RldBtn := PreGui.Add("Button", "yp wp x+10", "Reload")
+RldBtn.OnEvent("Click", Rld)
 ExitBtn := PreGui.Add("Button", "yp wp x+10", "Exit")
 ExitBtn.OnEvent("Click", ExApp)
 
-ExApp(*)
+
+PreGui.AddEdit("xm+10 w150 vPreName", "Name")
+WrIniBtn := PreGui.Add("Button", "yp w75 x+10", "New Preset")
+WrIniBtn.OnEvent("Click", WrIni)
+
+Rld(*)
 {
     Reload
 }
 
+ExApp(*)
+{
+    ExitApp
+}
+
+PresetNames := StrSplit(IniRead(IniPath), "`n")
+
+PreGui.AddText("xm+10", "Preset: ")
+PreGui.AddDropDownList(" yp w150 Choose1 vPresetName", PresetNames)
+LdIniBtn := PreGui.Add("Button", "yp w75 x+10", "Load")
+LdIniBtn.OnEvent("Click", LdIni)
+
+LdIni(*)
+{
+    MsgBox(PreGui['PresetName'].Text)
+}
+
+
 PreGui.AddText("xm+10 w110 Center", "Duration (sec)")
 PreGui.AddText("yp w100 Center", "Level (0-9)")
-
-PreGui.AddEdit("xm+10 vPreName", "Name")
 
 PreGui.AddText("xm+10 w60", "Interval 1: ")
 PreGui.AddEdit("yp w50 Right", )
@@ -63,7 +84,6 @@ AddRow(*)
     x += 1
 }
 
-
 WrIni(*) 
 {
 
@@ -86,7 +106,7 @@ WrIni(*)
             DefObj.Lev%i% := 0
         }
 */
-    Loop Count/2
+    Loop Count/2-1
         {
             i := A_Index
             IniWrite DefObj.Int%i%, IniPath, DefObj.PreName, "Int" i
