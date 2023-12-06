@@ -17,6 +17,7 @@ Update Preset updates selected preset
 Delete Preset deletes preset
 
 */
+
 PreGui := Gui("-SysMenu", "Gradient Interval Control")
 DropChoice := "Choose1" 
 
@@ -41,7 +42,6 @@ InitGui(*)
     LdPreBtn := PreGui.Add("Button", "yp w75 x+10", "Load Preset")
     LdPreBtn.OnEvent("Click", LdPre)
     
-    
     ;Interval/Level Header
     PreGui.AddText("xm+10 w110 Center", "Duration (sec)")
     PreGui.AddText("yp w100 Center", "Level (0-9)")
@@ -61,6 +61,7 @@ PreGui.AddEdit("yp w35 Right", )
 PreGui.AddUpDown("Range0-9 vLev1")
 ;-----
 
+;Initial Gui Show
 PreGui.Show
 
 Rld(*)
@@ -74,13 +75,12 @@ ExApp(*)
 }
 
 LdPre(*)
-{
-    ;MsgBox(PreGui['PresetName'].Text)
-    
+{   
     ; Get preset name
     global
     PresetNm := PreGui['PresetName'].Text
     DropChoice := "Choose" PreGui['PresetName'].Value
+
     ; Get values and create object
     PresetVals := StrSplit(IniRead(IniPath, PresetNm), "`n")
     PresetObj := {}
@@ -90,14 +90,12 @@ LdPre(*)
             PresetVals[i] := StrSplit(PresetVals[i], "=")
             PresetObj := PresetObj.DefineProp(PresetVals[i][1], {Value: PresetVals[i][2]})
         }
-        
-    ;MsgBox(PresetObj.Int)
 
     ; Create rows and fill with values
-    PreGui.Destroy
-    PreGui := Gui("-SysMenu", "Gradient Interval Control")
-    InitGui
-    Loop ObjOwnPropCount(PresetObj)/2
+    PreGui.Destroy ;Destroy existing Gui
+    PreGui := Gui("-SysMenu", "Gradient Interval Control") ;Create new Gui
+    InitGui ;Add default Gui Controls
+    Loop ObjOwnPropCount(PresetObj)/2 ; Create Interval and Level Rows and fill with values
         {
             i := A_Index
 
@@ -111,7 +109,7 @@ LdPre(*)
             
         }
         
-    PreGui.Show("Autosize")
+    PreGui.Show("Autosize") 
 }
 
 AddRow(*)
@@ -138,21 +136,24 @@ WrIni(*)
     Count := ObjOwnPropCount(DefObj)
 
     SectionNames := StrSplit(IniRead(IniPath), "`n") ; array of section names
-    ;MsgBox(SectionNames[1]) ; display first section name
+    
+    ; check if DefObj.PreName exists in Ini and prompt to overwrite
+    ; delete section on confirmation and proceed
+    ;IniDelete IniPath, DefObj.PreName
 
-    ;Section := IniRead(IniPath, SectionNames)
-
-/*    DefObj := Object()
+/*    
+    TestObj := Object()
 
     Loop 10
         {
             i := A_Index
-            ;DefObj := DefObj.DefineProp("Int" i, {Value: 10})
-            ;DefObj := DefObj.DefineProp("Lev" i, {Value: 0})
-            DefObj.Int%i% := 10
-            DefObj.Lev%i% := 0
+            ;TestObj := TestObj.DefineProp("Int" i, {Value: 10})
+            ;TestObj := TestObj.DefineProp("Lev" i, {Value: 0})
+            TestObj.Int%i% := 10
+            TestObj.Lev%i% := 0
         }
 */
+
     Loop Count/2-1
         {
             i := A_Index
@@ -160,5 +161,4 @@ WrIni(*)
             IniWrite DefObj.Lev%i%, IniPath, DefObj.PreName, "Lev" i
         }
 
-    ;IniDelete IniPath, "AddSection5", "Key5" ; delete AddSection5, Key5
 }
