@@ -50,12 +50,25 @@ LdPreBtn.OnEvent("Click", LdPre)
 
 LdPre(*)
 {
-    MsgBox(PreGui['PresetName'].Text)
-
+    ;MsgBox(PreGui['PresetName'].Text)
+    
     ; Get preset name
-    ; Get section
-    ; Get values
+    PresetNm := PreGui['PresetName'].Text
+    
+    ; Get values and create object
+    PresetVals := StrSplit(IniRead(IniPath, PresetNm), "`n")
+    PresetObj := {}
+    for vals in PresetVals
+        {
+            i := A_Index
+            PresetVals[i] := StrSplit(PresetVals[i], "=")
+            PresetObj := PresetObj.DefineProp(PresetVals[i][1], {Value: PresetVals[i][2]})
+        }
+        
+    ;MsgBox(PresetObj.Int)
+
     ; Create rows and fill with values
+
 
 }
 
