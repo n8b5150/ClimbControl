@@ -6,30 +6,62 @@ IniPath := "presets.ini"
 /*
     Read ini
 
-Put section names into drop down
+    Put section names into drop down
 
-Selecting drop down fills interval and level fields
+    Selecting drop down fills interval and level fields
 
-Save Preset to save new preset
+    Save Preset to save new preset
 
 Update Preset updates selected preset
 
 Delete Preset deletes preset
 
 */
-
 PreGui := Gui("-SysMenu", "Gradient Interval Control")
-AddRowBtn := PreGui.Add("Button", "Default w75 xm+35", "Add Interval")
-AddRowBtn.OnEvent("Click", AddRow)
-RldBtn := PreGui.Add("Button", "yp wp x+10", "Reload")
-RldBtn.OnEvent("Click", Rld)
-ExitBtn := PreGui.Add("Button", "yp wp x+10", "Exit")
-ExitBtn.OnEvent("Click", ExApp)
+DropChoice := "Choose1" 
 
+InitGui(*)
+{
+    AddRowBtn := PreGui.Add("Button", "Default w75 xm+35", "Add Interval")
+    AddRowBtn.OnEvent("Click", AddRow)
+    RldBtn := PreGui.Add("Button", "yp wp x+10", "Reload")
+    RldBtn.OnEvent("Click", Rld)
+    ExitBtn := PreGui.Add("Button", "yp wp x+10", "Exit")
+    ExitBtn.OnEvent("Click", ExApp)
+    
+    ;Add new preset
+    PreGui.AddEdit("xm+10 w150 vPreName", "Name")
+    WrIniBtn := PreGui.Add("Button", "yp w75 x+10", "New Preset")
+    WrIniBtn.OnEvent("Click", WrIni)
+    
+    ;Preset DropDown, load button
+    PresetNames := StrSplit(IniRead(IniPath), "`n")
+    PreGui.AddText("xm+10", "Preset: ")
+    PreGui.AddDropDownList(" yp w150 vPresetName " DropChoice, PresetNames)
+    LdPreBtn := PreGui.Add("Button", "yp w75 x+10", "Load Preset")
+    LdPreBtn.OnEvent("Click", LdPre)
+    
+    
+    ;Interval/Level Header
+    PreGui.AddText("xm+10 w110 Center", "Duration (sec)")
+    PreGui.AddText("yp w100 Center", "Level (0-9)")
+}
 
-PreGui.AddEdit("xm+10 w150 vPreName", "Name")
-WrIniBtn := PreGui.Add("Button", "yp w75 x+10", "New Preset")
-WrIniBtn.OnEvent("Click", WrIni)
+InitGui
+
+;-----
+;Initial Interval Field
+PreGui.AddText("xm+10 w60", "Interval 1: ")
+PreGui.AddEdit("yp w50 Right", )
+PreGui.AddUpDown("Range0-9999 vInt1")
+
+;Initial Level Field
+PreGui.AddText("yp w25 x+20", "Level ")
+PreGui.AddEdit("yp w35 Right", )
+PreGui.AddUpDown("Range0-9 vLev1")
+;-----
+
+PreGui.Show
 
 Rld(*)
 {
@@ -41,20 +73,14 @@ ExApp(*)
     ExitApp
 }
 
-PresetNames := StrSplit(IniRead(IniPath), "`n")
-
-PreGui.AddText("xm+10", "Preset: ")
-PreGui.AddDropDownList(" yp w150 Choose1 vPresetName", PresetNames)
-LdPreBtn := PreGui.Add("Button", "yp w75 x+10", "Load Preset")
-LdPreBtn.OnEvent("Click", LdPre)
-
 LdPre(*)
 {
     ;MsgBox(PreGui['PresetName'].Text)
     
     ; Get preset name
+    global
     PresetNm := PreGui['PresetName'].Text
-    
+    DropChoice := "Choose" PreGui['PresetName'].Value
     ; Get values and create object
     PresetVals := StrSplit(IniRead(IniPath, PresetNm), "`n")
     PresetObj := {}
@@ -68,23 +94,25 @@ LdPre(*)
     ;MsgBox(PresetObj.Int)
 
     ; Create rows and fill with values
+    PreGui.Destroy
+    PreGui := Gui("-SysMenu", "Gradient Interval Control")
+    InitGui
+    Loop ObjOwnPropCount(PresetObj)/2
+        {
+            i := A_Index
 
-
+            PreGui.AddText("xm+10 w60", "Interval " i ": ")
+            PreGui.AddEdit("yp w50 Right", )
+            PreGui.AddUpDown("Range0-9999 vInt" i, PresetObj.Int%i%)
+        
+            PreGui.AddText("yp w25 x+20", "Level ")
+            PreGui.AddEdit("yp w35 Right", )
+            PreGui.AddUpDown("Range0-9 vLev" i, PresetObj.Lev%i%)
+            
+        }
+        
+    PreGui.Show("Autosize")
 }
-
-
-PreGui.AddText("xm+10 w110 Center", "Duration (sec)")
-PreGui.AddText("yp w100 Center", "Level (0-9)")
-
-PreGui.AddText("xm+10 w60", "Interval 1: ")
-PreGui.AddEdit("yp w50 Right", )
-PreGui.AddUpDown("Range0-9999 vInt1")
-
-PreGui.AddText("yp w25 x+20", "Level ")
-PreGui.AddEdit("yp w35 Right", )
-PreGui.AddUpDown("Range0-9 vLev1")
-
-PreGui.Show
 
 AddRow(*)
 {
