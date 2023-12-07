@@ -3,22 +3,7 @@
 
 IniPath := "presets.ini"
 
-/*
-    Read ini
-
-    Put section names into drop down
-
-    Selecting drop down fills interval and level fields
-
-    Save Preset to save new preset
-
-Update Preset updates selected preset
-
-Delete Preset deletes preset
-
-*/
-
-PreGui := Gui("-SysMenu", "Gradient Interval Control")
+PreGui := Gui(, "Preset Test Window")
 DropChoice := "Choose1" 
 
 InitGui(*)
@@ -34,6 +19,10 @@ InitGui(*)
     PreGui.AddEdit("xm+10 w150 vPreName", "Name")
     WrIniBtn := PreGui.Add("Button", "yp w75 x+10", "New Preset")
     WrIniBtn.OnEvent("Click", WrIni)
+
+    ;Delete preset
+    DelIniBtn := PreGui.Add("Button", "yp w75 x+10", "Delete Preset")
+    DelIniBtn.OnEvent("Click", DelIni)
     
     ;Preset DropDown, load button
     PresetNames := StrSplit(IniRead(IniPath), "`n")
@@ -93,7 +82,7 @@ LdPre(*)
 
     ; Create rows and fill with values
     PreGui.Destroy ;Destroy existing Gui
-    PreGui := Gui("-SysMenu", "Gradient Interval Control") ;Create new Gui
+    PreGui := Gui(, "Preset Test Window") ;Create new Gui
     InitGui ;Add default Gui Controls
     Loop ObjOwnPropCount(PresetObj)/2 ; Create Interval and Level Rows and fill with values
         {
@@ -131,15 +120,33 @@ AddRow(*)
 
 WrIni(*) 
 {
-
     DefObj := PreGui.Submit()
     Count := ObjOwnPropCount(DefObj)
+    PreNm := StrLower(DefObj.PreName)
+    SectionNmStr := StrLower(IniRead(IniPath))
+    ;SectionNames := StrSplit(SectionNmStr, "`n") ; array of section names
 
-    SectionNames := StrSplit(IniRead(IniPath), "`n") ; array of section names
-    
     ; check if DefObj.PreName exists in Ini and prompt to overwrite
-    ; delete section on confirmation and proceed
-    ;IniDelete IniPath, DefObj.PreName
+    PreExists := InStr(SectionNmStr "`n", PreNm "`n")
+    if PreExists
+        {
+            Response := MsgBox("That preset name already exists.`nDo you want to overwrite? ", "Naming Conflict", "YesNo")
+            if Response = "No"
+                {
+                    PreGui.Show
+                }
+                ; delete section on confirmation and proceed
+                else
+                {
+                  IniDelete IniPath, PreNm  
+                  WrPreset
+                }
+        }
+    else
+        {
+            WrPreset
+        }
+    
 
 /*    
     TestObj := Object()
@@ -154,11 +161,39 @@ WrIni(*)
         }
 */
 
-    Loop Count/2-1
-        {
-            i := A_Index
-            IniWrite DefObj.Int%i%, IniPath, DefObj.PreName, "Int" i
-            IniWrite DefObj.Lev%i%, IniPath, DefObj.PreName, "Lev" i
-        }
+    WrPreset(*)
+    {    
+        Loop Count/2-1
+            {
+                i := A_Index
+                IniWrite DefObj.Int%i%, IniPath, PreNm, "Int" i
+                IniWrite DefObj.Lev%i%, IniPath, PreNm, "Lev" i
+            }
+    }
 
+    PreGui.Show
+}
+
+DelIni(*)
+{
+    DefObj := PreGui.Submit()
+    PreNm := StrLower(DefObj.PreName)
+    if PreNm="default"
+        {
+            MsgBox("This preset cannot be deleted.")
+            PreGui.Show
+        }
+    else
+        {
+            Response := MsgBox("Do you want to delete this Preset?", "Delete Preset?", "YesNo")
+            if Response = "No"
+                {
+                    PreGui.Show
+                }
+            else
+                {
+                  IniDelete IniPath, PreNm  
+                }
+            PreGui.Show
+        }
 }
