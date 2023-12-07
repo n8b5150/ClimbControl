@@ -17,19 +17,21 @@ InitGui(*)
     
     ;Add new preset
     PreGui.AddEdit("xm+10 w150 vPreName", "Name")
-    WrIniBtn := PreGui.Add("Button", "yp w75 x+10", "New Preset")
+    WrIniBtn := PreGui.Add("Button", "yp w75 x+10", "New")
     WrIniBtn.OnEvent("Click", WrIni)
 
     ;Delete preset
-    DelIniBtn := PreGui.Add("Button", "yp w75 x+10", "Delete Preset")
+    DelIniBtn := PreGui.Add("Button", "yp w75 x+10", "Delete")
     DelIniBtn.OnEvent("Click", DelIni)
     
     ;Preset DropDown, load button
     PresetNames := StrSplit(IniRead(IniPath), "`n")
     PreGui.AddText("xm+10", "Preset: ")
     PreGui.AddDropDownList(" yp w150 vPresetName " DropChoice, PresetNames)
-    LdPreBtn := PreGui.Add("Button", "yp w75 x+10", "Load Preset")
+    LdPreBtn := PreGui.Add("Button", "yp w75 x+10", "Load")
     LdPreBtn.OnEvent("Click", LdPre)
+    UpPreBtn := PreGui.Add("Button", "yp w75 x+10", "Update")
+    UpPreBtn.OnEvent("Click", UpdatePre)
     
     ;Interval/Level Header
     PreGui.AddText("xm+10 w110 Center", "Duration (sec)")
@@ -40,7 +42,7 @@ InitGui
 
 ;-----
 ;Initial Interval Field
-PreGui.AddText("xm+10 w60", "Interval 1: ")
+PreGui.AddText("xm+10 w60 vIntText1", "Interval 1: ")
 PreGui.AddEdit("yp w50 Right", )
 PreGui.AddUpDown("Range0-9999 vInt1")
 
@@ -88,7 +90,7 @@ LdPre(*)
         {
             i := A_Index
 
-            PreGui.AddText("xm+10 w60", "Interval " i ": ")
+            PreGui.AddText("xm+10 w60 vIntText" i, "Interval " i ": ")
             PreGui.AddEdit("yp w50 Right", )
             PreGui.AddUpDown("Range0-9999 vInt" i, PresetObj.Int%i%)
         
@@ -104,18 +106,26 @@ LdPre(*)
 AddRow(*)
 {
     if !IsSet(x)
-        static x := 2
-        
-    PreGui.AddText("xm+10 w60", "Interval " x ": ")
-    PreGui.AddEdit("yp w50 Right", )
-    PreGui.AddUpDown("Range0-9999 vInt" x)
-
-    PreGui.AddText("yp w25 x+20", "Level ")
-    PreGui.AddEdit("yp w35 Right", )
-    PreGui.AddUpDown("Range0-9 vLev" x)
+        static x := 1
     
-    PreGui.Show("Autosize")
-    x += 1
+    Try
+        {
+            PreGui.AddText("xm+10 w60 vIntText" x, "Interval " x ": ")
+            PreGui.AddEdit("yp w50 Right", )
+            PreGui.AddUpDown("Range0-9999 vInt" x)
+        
+            PreGui.AddText("yp w25 x+20", "Level ")
+            PreGui.AddEdit("yp w35 Right", )
+            PreGui.AddUpDown("Range0-9 vLev" x)
+            
+            PreGui.Show("Autosize")
+            x += 1
+        }
+    Catch
+        {
+            x +=1
+            AddRow
+        }
 }
 
 WrIni(*) 
@@ -196,4 +206,27 @@ DelIni(*)
                 }
             PreGui.Show
         }
+}
+
+UpdatePre(*)
+{
+    global
+    Response := MsgBox("Do you want to update this Preset?", "Update Preset?", "YesNo")
+    if Response = "No"
+        {
+            PreGui.Show
+        }
+    else
+        {
+        DefObj := PreGui.Submit()
+            Count := ObjOwnPropCount(DefObj)
+            IniDelete IniPath, PresetNm
+            Loop Count/2-1
+                {
+                    i := A_Index
+                    IniWrite DefObj.Int%i%, IniPath, PresetNm, "Int" i
+                    IniWrite DefObj.Lev%i%, IniPath, PresetNm, "Lev" i
+                }  
+        }
+    PreGui.Show
 }
