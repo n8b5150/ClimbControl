@@ -1,8 +1,10 @@
 #Requires AutoHotkey v2.0
 #SingleInstance
 #Include "%A_ScriptDir%"
+;#Include "%A_ScriptDir%\lib"
 #Include "cc_interval.ahk"
 #Include "cc_random.ahk"
+
 
 
 ClmbCtrl := Gui()
@@ -17,7 +19,24 @@ IntBtn.OnEvent("Click", IntMode)
 ;Buttons to manually select Level
 ClmbCtrl.AddText("xm w260 Center", "Manual Level Selection")
 
+ManBtn0 := ClmbCtrl.AddButton("xm vMan0", "0")
+ManBtn1 := ClmbCtrl.AddButton("yp vMan1", "1")
+ManBtn2 := ClmbCtrl.AddButton("yp vMan2", "2")
+ManBtn3 := ClmbCtrl.AddButton("yp vMan3", "3")
+ManBtn4 := ClmbCtrl.AddButton("yp vMan4", "4")
+ManBtn5 := ClmbCtrl.AddButton("yp vMan5", "5")
+ManBtn6 := ClmbCtrl.AddButton("yp vMan6", "6")
+ManBtn7 := ClmbCtrl.AddButton("yp vMan7", "7")
+ManBtn8 := ClmbCtrl.AddButton("yp vMan8", "8")
+ManBtn9 := ClmbCtrl.AddButton("yp vMan9", "9")
 
+Loop 10
+    {
+        i := A_Index-1
+        ManBtn%i%.OnEvent("Click", ManLev)
+    }
+
+/* Old manual button creation
 ManBtn0 := ClmbCtrl.AddButton("xm vMan0", "0")
 ManBtn0.OnEvent("Click", ManLev)
 ManBtn1 := ClmbCtrl.AddButton("yp vMan1", "1")
@@ -38,6 +57,7 @@ ManBtn8 := ClmbCtrl.AddButton("yp vMan8", "8")
 ManBtn8.OnEvent("Click", ManLev)
 ManBtn9 := ClmbCtrl.AddButton("yp vMan9", "9")
 ManBtn9.OnEvent("Click", ManLev)
+*/
 
 ClmbCtrl.Show
 

@@ -20,26 +20,6 @@ IntMode(*)
     {
         Reload
     }
-    
-    /* Preset Gui
-    IniPath := "presets.ini"
-    PresetNames := StrSplit(IniRead(IniPath), "`n")
-    ; preset dropdown - list section names from INI
-    IntGui.AddText("", "Preset: ")
-    IntGui.AddDropDownList("vPresetName", PresetNames)
-    ; load button - load selected section name, adding appropriate number of rows
-
-    ; save button - delete existing section and write new section of same name with confirmation
-
-    ; new button
-    NewPreset := Input Box("Enter a name for your preset:", "New Preset Name", "w300").value
-    ;   check to see if preset name exists and ask to overwrite
-    ;   overwrite deletes existing section and adds new section (see save)
-
-    ; delete button - delete selected section with confirmation
-
-
-    */
 
     IntGui.AddText("xm+10 w110 Center", "Duration (sec)")
     IntGui.AddText("yp w100 Center", "Level (0-9)")
