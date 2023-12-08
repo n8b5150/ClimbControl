@@ -5,8 +5,6 @@
 #Include "cc_interval.ahk"
 #Include "cc_random.ahk"
 
-
-
 ClmbCtrl := Gui()
 ;Button to select random interval mode
 RndmBtn := ClmbCtrl.AddButton("xm+30 w100 vRndm", "Random Mode")
@@ -64,9 +62,10 @@ ClmbCtrl.Show
 ManLev(n, *)
 {
     winid := WinGetID('A') ; Active window to be restored later
+    
     WinWait "SYSTM"
     WinActivate ;"SYSTM" ; Bring SYSTM to front
-    ControlSend SubStr(n.Name, 4, 1), , "SYSTM" ; Send Level to SYSTM
+    ControlSend SubStr(n.Name, 4, 1), , "SYSTM" ; Send Level to SYSTM using control name
 
     WinActivate(winid) ; Restore previous window
 }

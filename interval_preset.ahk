@@ -132,12 +132,13 @@ WrIni(*)
 {
     DefObj := PreGui.Submit()
     Count := ObjOwnPropCount(DefObj)
-    PreNm := StrLower(DefObj.PreName)
+    PreNm := DefObj.PreName
+    PreNmL := StrLower(PreNm)
     SectionNmStr := StrLower(IniRead(IniPath))
     ;SectionNames := StrSplit(SectionNmStr, "`n") ; array of section names
 
     ; check if DefObj.PreName exists in Ini and prompt to overwrite
-    PreExists := InStr(SectionNmStr "`n", PreNm "`n")
+    PreExists := InStr(SectionNmStr "`n", PreNmL "`n")
     if PreExists
         {
             Response := MsgBox("That preset name already exists.`nDo you want to overwrite? ", "Naming Conflict", "YesNo")
@@ -218,8 +219,9 @@ UpdatePre(*)
         }
     else
         {
-        DefObj := PreGui.Submit()
+            DefObj := PreGui.Submit()
             Count := ObjOwnPropCount(DefObj)
+            PresetNm := PreGui["PresetName"].Text
             IniDelete IniPath, PresetNm
             Loop Count/2-1
                 {
