@@ -103,7 +103,7 @@ LdPre(*)
     PreGui.Show("Autosize") 
 }
 
-AddRow(*)
+AddRow(*) ; to do - problem - window is not scrollable after screen height is reached
 {
     if !IsSet(x)
         static x := 1
@@ -189,7 +189,7 @@ DelIni(*)
 {
     DefObj := PreGui.Submit()
     PreNm := StrLower(DefObj.PreName)
-    if PreNm="default"
+    if PreNm="default" ; to do - come up with better protection/backup/undo scheme
         {
             MsgBox("This preset cannot be deleted.")
             PreGui.Show
